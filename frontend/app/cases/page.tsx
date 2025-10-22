@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
@@ -9,7 +9,7 @@ import { api } from '../lib/api';
 import StatusBadge from '../components/StatusBadge';
 import { formatDate } from '../lib/utils';
 
-export default function CasesPage() {
+function CasesPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [cases, setCases] = useState<Case[]>([]);
@@ -171,5 +171,13 @@ export default function CasesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CasesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CasesPageContent />
+    </Suspense>
   );
 }
