@@ -1,0 +1,63 @@
+CLINICAL DOCUMENTATION - PRIOR AUTHORIZATION REQUEST
+
+Patient Information:
+Name: Michael Thompson
+DOB: 03/15/1978
+Member ID: MEM789456123
+Date of Service: 10/22/2025
+
+Provider Information:
+Dr. Sarah Martinez, MD
+Orthopedic Surgery
+NPI: 1234567890
+Phone: (555) 123-4567
+
+Chief Complaint:
+Chronic lower back pain with radiculopathy
+
+History of Present Illness:
+Mr. Thompson is a 47-year-old male presenting with chronic lower back pain radiating to the right leg for 8 months. Pain intensity 7/10, worse with prolonged sitting and standing. Patient reports numbness and tingling in right foot and calf. Pain significantly impacts daily activities and work performance.
+
+Conservative Treatment History:
+- 8 weeks of physical therapy (3x/week) - minimal improvement
+- NSAIDs (Ibuprofen 800mg TID) - partial relief only
+- Muscle relaxants (Cyclobenzaprine 10mg QHS) - minimal benefit
+- Two epidural steroid injections - temporary relief lasting 2-3 weeks only
+- Home exercise program compliance documented
+
+Physical Examination:
+- Positive straight leg raise test on right at 45 degrees
+- Decreased sensation in L5 dermatome
+- 4/5 strength in right ankle dorsiflexion
+- Reduced lumbar range of motion
+- Tenderness at L4-L5 level
+
+Assessment:
+1. Lumbar radiculopathy, L4-L5 level (ICD-10: M54.16)
+2. Lumbar intervertebral disc displacement (ICD-10: M51.26)
+3. Chronic lower back pain (ICD-10: M54.5)
+
+Plan:
+Request MRI lumbar spine without contrast (CPT: 72148) to evaluate for:
+- Disc herniation
+- Nerve root compression
+- Surgical planning if conservative treatment continues to fail
+
+Medical Necessity Statement:
+MRI is medically necessary to evaluate the extent of disc herniation and nerve root compression after failed conservative treatment. Imaging will guide decision for potential surgical intervention vs. continued conservative management. Patient has documented red flag symptoms (progressive neurological deficits) requiring advanced imaging.
+
+Clinical Documentation Attached:
+- Physical therapy progress notes (8 weeks)
+- Medication trial records
+- Injection procedure notes
+- Neurological examination findings
+- Primary care referral
+
+Authorization Requested:
+CPT Code: 72148 (MRI Lumbar Spine without contrast)
+Estimated Cost: $1,200-$1,500
+Urgency: Routine (within 2 weeks)
+
+Provider Signature: Dr. Sarah Martinez, MD
+Date: 10/22/2025
+

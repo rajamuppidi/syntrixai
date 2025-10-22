@@ -1,0 +1,63 @@
+CLINICAL DOCUMENTATION - PRIOR AUTHORIZATION REQUEST
+
+Patient Information:
+Name: Jennifer Williams
+DOB: 07/22/1985
+Member ID: MEM456789321
+Date of Service: 10/22/2025
+
+Provider Information:
+Dr. Robert Chen, MD
+Orthopedic Surgery
+NPI: 9876543210
+Phone: (555) 987-6543
+
+Chief Complaint:
+Chronic right shoulder pain with limited range of motion
+
+History of Present Illness:
+Ms. Williams is a 40-year-old female presenting with chronic right shoulder pain for 6 months. Pain intensity 8/10, especially at night and with overhead activities. Patient is a competitive swimmer and unable to continue training. Pain radiates to upper arm. No history of acute trauma. Reports difficulty sleeping on right side.
+
+Conservative Treatment History:
+- 6 weeks of physical therapy (2x/week) - minimal improvement
+- NSAIDs (Naproxen 500mg BID) - inadequate pain relief
+- Cortisone injection to shoulder - temporary relief only
+- Activity modification and rest - symptoms persist
+
+Physical Examination:
+- Positive Neer's test (shoulder impingement)
+- Positive Hawkins-Kennedy test
+- Limited active ROM: Abduction to 100 degrees (normal 180)
+- Forward flexion to 120 degrees (normal 180)
+- Significant pain with internal rotation
+- Tenderness over rotator cuff insertion
+- Weakness in supraspinatus testing (4/5)
+
+Assessment:
+⚠️ WRONG CODES ENTERED BY PROVIDER (Common Coding Error):
+1. Pain in left knee, unspecified (ICD-10: M25.562) ❌ WRONG - Should be M25.511 (Right shoulder pain)
+2. Type 2 diabetes mellitus without complications (ICD-10: E11.9) ❌ WRONG - Not relevant to chief complaint
+
+Plan:
+⚠️ WRONG PROCEDURE CODE:
+Request MRI of left knee without contrast (CPT: 73721) ❌ WRONG - Should be 73221 (Shoulder MRI)
+
+Medical Necessity Statement:
+Patient has chronic shoulder pain with suspected rotator cuff tear after failed conservative treatment. MRI is needed to evaluate rotator cuff integrity and guide treatment planning (possible surgical repair vs continued conservative management). Patient is young and active with significant functional limitations.
+
+Clinical Documentation Attached:
+- Physical therapy progress notes (6 weeks)
+- Shoulder examination findings
+- Injection procedure note
+- Activity logs showing functional limitations
+
+Authorization Requested:
+⚠️ CPT Code: 73721 (MRI Left Knee) ❌ WRONG BODY PART
+Estimated Cost: $1,200-$1,500
+Urgency: Routine (within 2 weeks)
+
+NOTE TO REVIEWER: This case demonstrates a common provider error where diagnosis and procedure codes do not match the clinical presentation documented in the chart. The clinical summary clearly describes a shoulder problem, but the codes submitted are for knee (procedure) and diabetes (diagnosis). This type of coding error should be denied and returned to provider for correction.
+
+Provider Signature: Dr. Robert Chen, MD
+Date: 10/22/2025
+

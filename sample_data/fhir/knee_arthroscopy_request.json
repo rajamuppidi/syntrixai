@@ -1,0 +1,170 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "id": "pa-request-002",
+  "timestamp": "2024-10-16T11:00:00Z",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-002",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-002",
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/patients",
+            "value": "MRN-891234"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Martinez",
+            "given": ["Carlos", "Roberto"]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1985-03-22",
+        "address": [
+          {
+            "use": "home",
+            "line": ["456 Oak Avenue"],
+            "city": "Boston",
+            "state": "MA",
+            "postalCode": "02101"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:condition-003",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-003",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M23.261",
+              "display": "Derangement of posterior horn of medial meniscus due to old tear, right knee"
+            }
+          ],
+          "text": "Medial meniscus tear, right knee"
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-002"
+        },
+        "onsetDateTime": "2024-07-10",
+        "note": [
+          {
+            "text": "3-month history of right knee pain and locking. MRI confirms medial meniscus tear. Failed conservative treatment including physical therapy."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:service-request-002",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "service-request-002",
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "387713003",
+                "display": "Surgical procedure"
+              }
+            ]
+          }
+        ],
+        "priority": "routine",
+        "code": {
+          "coding": [
+            {
+              "system": "http://www.ama-assn.org/go/cpt",
+              "code": "29881",
+              "display": "Arthroscopy, knee, surgical; with meniscectomy"
+            }
+          ],
+          "text": "Arthroscopic meniscectomy, right knee"
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-002"
+        },
+        "authoredOn": "2024-10-16",
+        "requester": {
+          "reference": "Practitioner/dr-ortho",
+          "display": "Dr. Emily Chen, MD - Orthopedic Surgery"
+        },
+        "reasonCode": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/sid/icd-10",
+                "code": "M23.261",
+                "display": "Medial meniscus tear"
+              }
+            ]
+          }
+        ],
+        "reasonReference": [
+          {
+            "reference": "urn:uuid:condition-003"
+          }
+        ],
+        "note": [
+          {
+            "text": "Patient is 39-year-old active male with confirmed medial meniscus tear on MRI. Has completed 8 weeks of physical therapy without improvement. Continues to experience mechanical symptoms including locking and catching. Surgery is medically necessary to restore function."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:document-002",
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "document-002",
+        "status": "current",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "34117-2",
+              "display": "History and physical note"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-002"
+        },
+        "date": "2024-10-16T10:30:00Z",
+        "author": [
+          {
+            "reference": "Practitioner/dr-ortho",
+            "display": "Dr. Emily Chen, MD"
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "text/plain",
+              "data": "T1JUSFJQRURJQ0lDOE9SVEhPUEVESUMgQ09OU1VMVEFUSU9OCkRhdGU6IDEwLzE2LzIwMjQKClBBVElFTlQ6IENhcmxvcyBNYXJ0aW5leiwgMzkteWVhci1vbGQgbWFsZQoKQ0hJRUYgQ09NUExBSU5UOiBSaWdodCBrbmVlIHBhaW4gYW5kIG1lY2hhbmljYWwgc3ltcHRvbXMKCkhJU1RPUlkgT0YgUFJFU0VOVCBJTE5FU1M6Ci0gSW5pdGlhbCBpbmp1cnk6IDMgbW9udGhzIGFnbyBkdXJpbmcgcmVjcmVhdGlvbmFsIGJhc2tldGJhbGwKLSBGZWx0IHBvcCBhbmQgaW1tZWRpYXRlIHBhaW4gYWZ0ZXIgdHdpc3RpbmcgbW92ZW1lbnQKLSBQZXJzaXN0ZW50IHBhaW4sIHN3ZWxsaW5nLCBhbmQgbG9ja2luZyBzZW5zYXRpb24KLSBMaW1pdHMgYWN0aXZpdGllcyBvZiBkYWlseSBsaXZpbmcgYW5kIHdvcmsgKGNvbnN0cnVjdGlvbikKClBSSU9SIFRFU1RJTkc6Ci0gTVJJIHJpZ2h0IGtuZWUgKDkvMTUvMjAyNCk6IENvbXBsZXggdGVhciBvZiBwb3N0ZXJpb3IgaG9ybiBvZiBtZWRpYWwgbWVuaXNjdXMKLSBYLXJheTogTm8gZnJhY3R1cmUsIG1pbGQgZGVnZW5lcmF0aXZlIGNoYW5nZXMKClBSSU9SIFRSRUFUTUVOVDoKLSBSZXN0IGFuZCBpY2UgLSB0ZW1wb3JhcnkgcmVsaWVmIG9ubHkKLSBOU0FJRHMgLSBtaW5pbWFsIGltcHJvdmVtZW50Ci0gUGh5c2ljYWwgdGhlcmFweSAyeCBwZXIgd2VlayBmb3IgOCB3ZWVrcyAtIG5vIHNpZ25pZmljYW50IGltcHJvdmVtZW50Ci0gQ29ydGlzb25lIGluamVjdGlvbiAoMS8yMC8yMDI0KSAtIDMgd2Vla3Mgb2YgcmVsaWVmCgpQSFlTSUNBTCBFWEFNSU5BVElPTjoKLSBJbnNwZWN0aW9uOiBNaWxkIGVmZnVzaW9uIHJpZ2h0IGtuZWUKLSBQYWxwYXRpb246IFRlbmRlcm5lc3MgYWxvbmcgbWVkaWFsIGpvaW50IGxpbmUKLSBSYW5nZSBvZiBtb3Rpb246IDUtMTMwIMKwICh3aXRoIHBhaW4pCi0gTWNNdXJyYXkncyB0ZXN0OiBQb3NpdGl2ZSBmb3IgbWVkaWFsIG1lbmlzY3VzIHRlYXIKLSBBcGxleSdzIGNvbXByZXNzaW9uIHRlc3Q6IFBvc2l0aXZlCi0gTGlnYW1lbnQgc3RhYmlsaXR5OiBBQ0wvUENML01DTCBzdGFibGUKClBBVElFTlQgSEVBTFRIIFFVRVNUSU9OTkFJUkU6Ci0gQmFzZWxpbmUgS09PUyBzY29yZTogNDIvMTAwCi0gRGlmZmljdWx0eSB3aXRoIHN0YWlycywgc3F1YXR0aW5nLCBydW5uaW5nCgpBU1NFU1NNRU5UIEFORCBQTEFOOQIJQI0gTWVkaWFsIG1lbmlzY3VzIHRlYXIsIHJpZ2h0IGtuZWUgKElDRC0xMCBNMjMuMjYxKQotIFN5bXB0b21hdGljIHdpdGggbWVjaGFuaWNhbCBzeW1wdG9tcwotIEZhaWxlZCBjb25zZXJ2YXRpdmUgbWFuYWdlbWVudCAoOCB3ZWVrcyBQVCwgaW5qZWN0aW9uKQotIE1SSSBjb25maXJtZWQgY29tcGxleCB0ZWFyCi0gUmVjb21tZW5kYXRpb246IEFydGhyb3Njb3BpYyBtZW5pc2NlY3RvbXksIHJpZ2h0IGtuZWUgKENQVCAyOTg4MSkKLSBNZWRpY2FsbHkgbmVjZXNzYXJ5IHRvIHJlbGlldmUgbWVjaGFuaWNhbCBzeW1wdG9tcyBhbmQgcmVzdG9yZSBmdW5jdGlvbgotIFByaW9yIGF1dGhvcml6YXRpb24gcmVxdWVzdGVkCgotIERyLiBFbWlseSBDaGVuLCBNRCAtIE9ydGhvcGVkaWMgU3VyZ2VyeQ=="
+            }
+          }
+        ],
+        "description": "Orthopedic consultation note supporting arthroscopy request"
+      }
+    }
+  ]
+}
+

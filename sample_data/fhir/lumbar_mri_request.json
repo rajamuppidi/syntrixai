@@ -1,0 +1,223 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "id": "pa-request-001",
+  "timestamp": "2024-10-16T10:30:00Z",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-001",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-001",
+        "identifier": [
+          {
+            "system": "http://hospital.example.org/patients",
+            "value": "MRN-784512"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Johnson",
+            "given": ["Sarah", "Marie"]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1978-05-15",
+        "address": [
+          {
+            "use": "home",
+            "line": ["123 Main Street"],
+            "city": "Springfield",
+            "state": "IL",
+            "postalCode": "62701"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "555-123-4567",
+            "use": "mobile"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:condition-001",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-001",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                "code": "encounter-diagnosis"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M54.16",
+              "display": "Radiculopathy, lumbar region"
+            }
+          ],
+          "text": "Lumbar radiculopathy with nerve root compression"
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-001"
+        },
+        "onsetDateTime": "2024-08-15",
+        "note": [
+          {
+            "text": "Patient reports persistent lower back pain radiating to left leg for 6 weeks. Conservative management with PT and medications has provided minimal relief."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:condition-002",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-002",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "M51.26",
+              "display": "Other intervertebral disc displacement, lumbar region"
+            }
+          ],
+          "text": "Suspected L4-L5 disc herniation"
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-001"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:service-request-001",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "service-request-001",
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "363679005",
+                "display": "Imaging"
+              }
+            ]
+          }
+        ],
+        "priority": "routine",
+        "code": {
+          "coding": [
+            {
+              "system": "http://www.ama-assn.org/go/cpt",
+              "code": "72148",
+              "display": "MRI lumbar spine without contrast"
+            }
+          ],
+          "text": "MRI of lumbar spine without contrast material"
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-001"
+        },
+        "authoredOn": "2024-10-16",
+        "requester": {
+          "reference": "Practitioner/dr-smith",
+          "display": "Dr. James Smith, MD"
+        },
+        "reasonCode": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/sid/icd-10",
+                "code": "M54.16",
+                "display": "Radiculopathy, lumbar region"
+              }
+            ]
+          }
+        ],
+        "reasonReference": [
+          {
+            "reference": "urn:uuid:condition-001"
+          }
+        ],
+        "note": [
+          {
+            "text": "Patient has failed conservative treatment including 6 weeks of physical therapy and anti-inflammatory medications. Neurological examination shows positive straight leg raise test on left. MRI needed to evaluate for surgical intervention vs. continued conservative management."
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:document-001",
+      "resource": {
+        "resourceType": "DocumentReference",
+        "id": "document-001",
+        "status": "current",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "11506-3",
+              "display": "Progress note"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-001"
+        },
+        "date": "2024-10-16T10:00:00Z",
+        "author": [
+          {
+            "reference": "Practitioner/dr-smith",
+            "display": "Dr. James Smith, MD"
+          }
+        ],
+        "content": [
+          {
+            "attachment": {
+              "contentType": "text/plain",
+              "data": "Q0xJTklDQUwgTk9URTogRGF0ZTogMTAvMTYvMjAyNAoKUEFUSUVOVDogU2FyYWggSm9obnNvbiwgNDYteWVhci1vbGQgZmVtYWxlCgpDSElFRiBDT01QTEFJTlQ6IFBlcnNpc3RlbnQgbG93ZXIgYmFjayBwYWluIHJhZGlhdGluZyB0byBsZWZ0IGxlZwoKSElTVE9SWSBPRiBQUkVTRU5UIElMTE5FU1M6Ci0gT25zZXQ6IDYgd2Vla3MgYWdvIGFmdGVyIGxpZnRpbmcgaGVhdnkgYm94Ci0gUGFpbiBpbnRlbnNpdHk6IDcvMTAgb24gYXZlcmFnZQotIExvY2F0aW9uOiBMb3dlciBiYWNrIHJhZGlhdGluZyBkb3duIGxlZnQgbGVnIHRvIGZvb3QKLSBXb3JzZW5pbmcgZmFjdG9yczogU2l0dGluZywgYmVuZGluZyBmb3J3YXJkCi0gUmVsaWV2aW5nIGZhY3RvcnM6IEx5aW5nIGZsYXQsIGhlYXQgYXBwbGljYXRpb24KLSBBc3NvY2lhdGVkIHN5bXB0b21zOiBOdW1ibmVzcyBhbmQgdGluZ2xpbmcgaW4gbGVmdCBmb290CgpQQVNUIE1FRElDQUwgSElTVE9SWTogSHlwZXJ0ZW5zaW9uIChzdGFibGUpCgpNRURJQ0FUSU9OUzoKLSBJYnVwcm9mZW4gNjAwbWcgVElEIC0gbWluaW1hbCByZWxpZWYKLSBDeWNsb2JlbnphcHJpbmUgMTBtZyBIUyAtIG1vZGVyYXRlIHJlbGllZgoKUEhZU0lDQUwgRVhBTUlOQVRJT046Ci0gVml0YWwgc2lnbnM6IEJQIDEzMi84NCwgSFIgNzIsIFQgOTguNsKwRgotIEdhaXQ6IEFudGFsZ2ljIGdhaXQgZmF2b3JpbmcgbGVmdCBsZWcKLSBTcGluZTogVGVuZGVybmVzcyB0byBwYWxwYXRpb24gTDQtTDUgbGV2ZWwKLSBTdHJhaWdodCBsZWcgcmFpc2UgdGVzdDogUG9zaXRpdmUgb24gbGVmdCBhdCA0NcKwIChyZXByb2R1Y2VzIHBhaW4pCi0gTW90b3I6IDQvNSBzdHJlbmd0aCBpbiBsZWZ0IGRvcnNpZmxleGlvbgotIFNlbnNvcnk6IERlY3JlYXNlZCBzZW5zYXRpb24gaW4gTDQtTDUgZGVybWF0b21lCi0gUmVmbGV4ZXM6IEFjaGlsbGVzIHJlZmxleCBkaW1pbmlzaGVkIG9uIGxlZnQKClBSSU9SIFRSRUFUTUVOVDoKLSBQaHlzaWNhbCB0aGVyYXB5OiAzIHRpbWVzIHBlciB3ZWVrIGZvciA2IHdlZWtzIC0gbWluaW1hbCBpbXByb3ZlbWVudAotIENvbnNlcnZhdGl2ZSBjYXJlIGluY2x1ZGluZyBOU0FJRHMsIG11c2NsZSByZWxheGFudHMKLSBQYXRpZW50IHJlcG9ydHMgbm8gc2lnbmlmaWNhbnQgaW1wcm92ZW1lbnQKCkFTU0VTU01FTlQgQU5EIFBMQU46Ci0gTHVtYmFyIHJhZGljdWxvcGF0aHksIGxpa2VseSBMNC1MNSBkaXNjIGhlcm5pYXRpb24KLSBGYWlsZWQgY29uc2VydmF0aXZlIG1hbmFnZW1lbnQKLSBPcmRlciBNUkkgbHVtYmFyIHNwaW5lIHdpdGhvdXQgY29udHJhc3QgdG8gZXZhbHVhdGUgZm9yIHN1cmdpY2FsIGludGVydmVudGlvbiB2cy4gY29udGludWVkIGNvbnNlcnZhdGl2ZSBtYW5hZ2VtZW50Ci0gRm9sbG93LXVwIGluIDEgd2VlayB0byByZXZpZXcgTVJJIHJlc3VsdHMKCi0gRHIuIEphbWVzIFNtaXRoLCBNRA=="
+            }
+          }
+        ],
+        "description": "Clinical note supporting MRI request"
+      }
+    }
+  ]
+}
+

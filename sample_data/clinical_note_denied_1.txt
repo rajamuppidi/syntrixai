@@ -1,0 +1,35 @@
+CLINICAL NOTE - ORTHOPEDIC CONSULTATION
+Patient: Michael Roberts
+DOB: 05/15/1982
+Date of Service: October 22, 2025
+
+CHIEF COMPLAINT:
+Right shoulder pain
+
+HISTORY OF PRESENT ILLNESS:
+45-year-old male presents with mild right shoulder discomfort for 2 weeks. 
+Patient reports no trauma, no limitation in range of motion, able to perform all daily activities without difficulty.
+Pain is 2/10 on pain scale, intermittent, improves with rest.
+
+PHYSICAL EXAMINATION:
+- Full range of motion in right shoulder
+- No tenderness to palpation
+- Negative impingement signs
+- Normal strength 5/5 in all muscle groups
+- No swelling or deformity
+
+ASSESSMENT:
+Mild shoulder strain, likely muscular in nature
+
+PLAN:
+1. Rest and activity modification
+2. Over-the-counter NSAIDs as needed
+3. Request MRI right shoulder to rule out rotator cuff tear
+4. Physical therapy if symptoms persist
+
+DIAGNOSIS: Right shoulder pain (ICD-10: M25.511)
+PROCEDURE REQUESTED: MRI right shoulder without contrast (CPT: 73221)
+
+Dr. Sarah Mitchell, MD
+Orthopedic Surgery
+

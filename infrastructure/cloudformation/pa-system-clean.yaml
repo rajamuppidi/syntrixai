@@ -1,0 +1,684 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Syntrix AI - Prior Authorization System - Production Grade Infrastructure'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues:
+      - dev
+      - staging
+      - production
+    Description: Environment name
+
+  BedrockModelId:
+    Type: String
+    Default: amazon.nova-pro-v1:0
+    Description: Bedrock model ID for AI processing
+
+  AccountId:
+    Type: String
+    Default: 365844621293
+    Description: AWS Account ID (for unique bucket names)
+
+Resources:
+  # ██████████████████████████████████████████████████████████████
+  # █                                                            █
+  # █                      S3 STORAGE                           █
+  # █                    (3 Buckets)                            █
+  # █                                                            █
+  # ██████████████████████████████████████████████████████████████
+  
+  AccessLogsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'pa-agent-access-logs-${AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Purpose
+          Value: AccessLogs
+
+  AccessLogsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: AccessLogsBucket
+    Properties:
+      Bucket: !Ref AccessLogsBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: S3ServerAccessLogsPolicy
+            Effect: Allow
+            Principal:
+              Service: logging.s3.amazonaws.com
+            Action:
+              - s3:PutObject
+            Resource: !Sub '${AccessLogsBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+
+  ClinicalNotesBucket:
+    Type: AWS::S3::Bucket
+    DependsOn: AccessLogsBucket
+    Properties:
+      BucketName: !Sub 'pa-agent-clinical-notes-${AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      LoggingConfiguration:
+        DestinationBucketName: !Ref AccessLogsBucket
+        LogFilePrefix: clinical-notes/
+      LifecycleConfiguration:
+        Rules:
+          - Id: HIPAA-7-year-retention
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 90
+                StorageClass: STANDARD_IA
+              - TransitionInDays: 365
+                StorageClass: GLACIER
+            ExpirationInDays: 2555  # 7 years for HIPAA compliance
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Purpose
+          Value: ClinicalNotes
+        - Key: Compliance
+          Value: HIPAA
+
+  EvidenceDocsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'pa-agent-evidence-docs-${AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Purpose
+          Value: EvidenceDocs
+
+  # ██████████████████████████████████████████████████████████████
+  # █                                                            █
+  # █                      DYNAMODB                             █
+  # █                    (1 Table)                              █
+  # █                                                            █
+  # ██████████████████████████████████████████████████████████████
+
+  CasesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: pa-agent-cases
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: case_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: case_id
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Purpose
+          Value: CaseData
+
+  # ██████████████████████████████████████████████████████████████
+  # █                                                            █
+  # █                   IAM SECURITY                            █
+  # █              (Least Privilege Role)                       █
+  # █                                                            █
+  # ██████████████████████████████████████████████████████████████
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: pa-agent-lambda-role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - bedrock.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: PASystemPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # DynamoDB Access (scoped)
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !GetAtt CasesTable.Arn
+              # S3 Access (scoped)
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub '${ClinicalNotesBucket.Arn}/*'
+                  - !GetAtt ClinicalNotesBucket.Arn
+                  - !Sub '${EvidenceDocsBucket.Arn}/*'
+                  - !GetAtt EvidenceDocsBucket.Arn
+              # Bedrock Access (scoped to models)
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                  - bedrock:Converse
+                  - bedrock:ConverseStream
+                Resource:
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/amazon.nova-pro-v1:0'
+              # Bedrock Agent Access
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeAgent
+                Resource:
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/*'
+              # Lambda Invocation (for orchestration)
+              - Effect: Allow
+                Action:
+                  - lambda:InvokeFunction
+                Resource:
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:pa-*'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ██████████████████████████████████████████████████████████████
+  # █                                                            █
+  # █                  LAMBDA FUNCTIONS                         █
+  # █                   (7 Functions)                           █
+  # █                                                            █
+  # ██████████████████████████████████████████████████████████████
+  
+  # ────────────────────────────────────────────────────────────
+  # 1. EXTRACTION AGENT
+  # ────────────────────────────────────────────────────────────
+
+  ExtractionAgentFunction:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - ClinicalNotesBucket
+      - CasesTable
+      - LambdaExecutionRole
+    Properties:
+      FunctionName: pa-extraction-agent
+      Runtime: python3.11
+      Handler: extraction_agent.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Code:
+        ZipFile: |
+          # Placeholder - Deploy actual code separately
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref CasesTable
+          S3_CLINICAL_NOTES_BUCKET: !Ref ClinicalNotesBucket
+          S3_EVIDENCE_BUCKET: !Ref EvidenceDocsBucket
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          MASK_PHI: 'true'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Function
+          Value: Extraction
+
+  # ────────────────────────────────────────────────────────────
+  # 2. ORCHESTRATOR
+  # ────────────────────────────────────────────────────────────
+
+  OrchestratorFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: pa-orchestrator
+      Runtime: python3.11
+      Handler: agent_orchestrator.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Code:
+        ZipFile: |
+          # Placeholder - Deploy actual code separately
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref CasesTable
+          S3_CLINICAL_NOTES_BUCKET: !Ref ClinicalNotesBucket
+          S3_EVIDENCE_BUCKET: !Ref EvidenceDocsBucket
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          BEDROCK_AGENT_ID: !Ref BedrockAgent
+          BEDROCK_AGENT_ALIAS_ID: !Ref ProductionAgentAlias
+          USE_BEDROCK_AGENT: 'true'
+          MASK_PHI: 'true'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Function
+          Value: Orchestration
+
+  # ────────────────────────────────────────────────────────────
+  # 3. CODE VALIDATOR
+  # ────────────────────────────────────────────────────────────
+
+  CodeValidatorFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: pa-code-validator
+      Runtime: python3.11
+      Handler: code_validator.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Code:
+        ZipFile: |
+          # Placeholder
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref CasesTable
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          MASK_PHI: 'true'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ────────────────────────────────────────────────────────────
+  # 4. EVIDENCE CHECKER
+  # ────────────────────────────────────────────────────────────
+
+  EvidenceCheckerFunction:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - EvidenceDocsBucket
+      - LambdaExecutionRole
+    Properties:
+      FunctionName: pa-evidence-checker
+      Runtime: python3.11
+      Handler: evidence_checker.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Code:
+        ZipFile: |
+          # Placeholder
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          S3_EVIDENCE_BUCKET: !Ref EvidenceDocsBucket
+          MASK_PHI: 'true'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ────────────────────────────────────────────────────────────
+  # 5. MOCK PAYER API
+  # ────────────────────────────────────────────────────────────
+
+  MockPayerApiFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: pa-mock-payer-api
+      Runtime: python3.11
+      Handler: mock_payer_api.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Code:
+        ZipFile: |
+          # Placeholder
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref CasesTable
+          BEDROCK_MODEL_ID: !Ref BedrockModelId
+          MASK_PHI: 'true'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ────────────────────────────────────────────────────────────
+  # 6. GET CASE DATA
+  # ────────────────────────────────────────────────────────────
+
+  GetCaseDataFunction:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - CasesTable
+      - LambdaExecutionRole
+    Properties:
+      FunctionName: pa-get-case-data
+      Runtime: python3.11
+      Handler: get_case_data.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 30
+      MemorySize: 128
+      Code:
+        ZipFile: |
+          # Placeholder
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref CasesTable
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ────────────────────────────────────────────────────────────
+  # 7. Q DATA SOURCE (Unused)
+  # ────────────────────────────────────────────────────────────
+
+  QDataSourceFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: LambdaExecutionRole
+    Properties:
+      FunctionName: pa-q-data-source
+      Runtime: python3.11
+      Handler: q_data_source.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 60
+      MemorySize: 512
+      Code:
+        ZipFile: |
+          # Placeholder
+          def lambda_handler(event, context):
+              return {'statusCode': 200, 'body': 'Deploy actual code'}
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref CasesTable
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ██████████████████████████████████████████████████████████████
+  # █                                                            █
+  # █                   BEDROCK AGENT                           █
+  # █          (Orchestration + Action Groups)                  █
+  # █                                                            █
+  # ██████████████████████████████████████████████████████████████
+
+  BedrockAgent:
+    Type: AWS::Bedrock::Agent
+    DependsOn:
+      - CodeValidatorFunction
+      - EvidenceCheckerFunction
+      - MockPayerApiFunction
+      - GetCaseDataFunction
+    Properties:
+      AgentName: pa-orchestration-agent
+      FoundationModel: !Ref BedrockModelId
+      AgentResourceRoleArn: !GetAtt LambdaExecutionRole.Arn
+      Instruction: |
+        You are a Prior Authorization orchestration agent for healthcare.
+        
+        Your workflow:
+        1. Use CodeValidator to validate ICD-10 and CPT medical codes
+        2. Use EvidenceChecker to verify required supporting documents exist
+        3. Use PayerSubmission to submit the authorization request to the payer
+        4. Report the final status (approved/denied) with clear explanations
+        
+        Always complete all steps systematically and provide detailed reasoning for your decisions.
+      IdleSessionTTLInSeconds: 600
+      ActionGroups:
+        - ActionGroupName: CodeValidator
+          Description: Validates ICD-10 and CPT medical codes
+          ActionGroupState: ENABLED
+          ActionGroupExecutor:
+            Lambda: !GetAtt CodeValidatorFunction.Arn
+          FunctionSchema:
+            Functions:
+              - Name: validate_codes
+                Description: Validates ICD-10 diagnosis codes and CPT procedure codes against official databases
+                Parameters:
+                  case_id:
+                    Type: string
+                    Description: The unique case identifier
+                    Required: true
+                  icd10_codes:
+                    Type: array
+                    Description: List of ICD-10 diagnosis codes to validate
+                    Required: true
+                  cpt_codes:
+                    Type: array
+                    Description: List of CPT procedure codes to validate
+                    Required: true
+        
+        - ActionGroupName: EvidenceChecker
+          Description: Verifies required supporting documents exist
+          ActionGroupState: ENABLED
+          ActionGroupExecutor:
+            Lambda: !GetAtt EvidenceCheckerFunction.Arn
+          FunctionSchema:
+            Functions:
+              - Name: check_evidence
+                Description: Checks if required supporting documents exist for the authorization request
+                Parameters:
+                  case_id:
+                    Type: string
+                    Description: The unique case identifier
+                    Required: true
+                  cpt_codes:
+                    Type: array
+                    Description: List of CPT procedure codes requiring evidence
+                    Required: true
+        
+        - ActionGroupName: PayerSubmission
+          Description: Submits PA request to payer system
+          ActionGroupState: ENABLED
+          ActionGroupExecutor:
+            Lambda: !GetAtt MockPayerApiFunction.Arn
+          FunctionSchema:
+            Functions:
+              - Name: submit_to_payer
+                Description: Submits the prior authorization request to the payer system
+                Parameters:
+                  case_id:
+                    Type: string
+                    Description: The unique case identifier
+                    Required: true
+        
+        - ActionGroupName: GetCaseDataGroup
+          ActionGroupState: ENABLED
+          ActionGroupExecutor:
+            Lambda: !GetAtt GetCaseDataFunction.Arn
+          FunctionSchema:
+            Functions:
+              - Name: GetCaseData
+                Description: Retrieves complete case data from DynamoDB
+                Parameters:
+                  case_id:
+                    Type: string
+                    Description: The unique identifier for the prior authorization case
+                    Required: true
+
+  # Agent Aliases
+  TestAgentAlias:
+    Type: AWS::Bedrock::AgentAlias
+    Properties:
+      AgentId: !Ref BedrockAgent
+      AgentAliasName: AgentTestAlias
+      Description: Test Alias for Agent
+      RoutingConfiguration:
+        - AgentVersion: DRAFT
+
+  ProductionAgentAlias:
+    Type: AWS::Bedrock::AgentAlias
+    Properties:
+      AgentId: !Ref BedrockAgent
+      AgentAliasName: production
+      RoutingConfiguration:
+        - AgentVersion: '3'
+
+  # ██████████████████████████████████████████████████████████████
+  # █                                                            █
+  # █                LAMBDA PERMISSIONS                         █
+  # █         (Bedrock Agent Invocation Rights)                 █
+  # █                                                            █
+  # ██████████████████████████████████████████████████████████████
+
+  CodeValidatorInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CodeValidatorFunction
+      Action: lambda:InvokeFunction
+      Principal: bedrock.amazonaws.com
+      SourceArn: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/${BedrockAgent}'
+
+  EvidenceCheckerInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref EvidenceCheckerFunction
+      Action: lambda:InvokeFunction
+      Principal: bedrock.amazonaws.com
+      SourceArn: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/${BedrockAgent}'
+
+  MockPayerApiInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref MockPayerApiFunction
+      Action: lambda:InvokeFunction
+      Principal: bedrock.amazonaws.com
+      SourceArn: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/${BedrockAgent}'
+
+  GetCaseDataInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref GetCaseDataFunction
+      Action: lambda:InvokeFunction
+      Principal: bedrock.amazonaws.com
+      SourceArn: !Sub 'arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:agent/${BedrockAgent}'
+
+# ██████████████████████████████████████████████████████████████
+# █                                                            █
+# █                      OUTPUTS                              █
+# █              (Resource References)                        █
+# █                                                            █
+# ██████████████████████████████████████████████████████████████
+
+Outputs:
+  # ────────────────────────────────────────────────────────────
+  # Storage Resources
+  # ────────────────────────────────────────────────────────────
+  
+  ClinicalNotesBucketName:
+    Description: S3 bucket for clinical notes
+    Value: !Ref ClinicalNotesBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-ClinicalNotesBucket'
+
+  EvidenceDocsBucketName:
+    Description: S3 bucket for evidence documents
+    Value: !Ref EvidenceDocsBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-EvidenceDocsBucket'
+
+  CasesTableName:
+    Description: DynamoDB table for cases
+    Value: !Ref CasesTable
+    Export:
+      Name: !Sub '${AWS::StackName}-CasesTable'
+
+  # ────────────────────────────────────────────────────────────
+  # Bedrock Resources
+  # ────────────────────────────────────────────────────────────
+
+  BedrockAgentId:
+    Description: Bedrock Agent ID
+    Value: !Ref BedrockAgent
+    Export:
+      Name: !Sub '${AWS::StackName}-BedrockAgentId'
+
+  ProductionAgentAliasId:
+    Description: Production Agent Alias ID
+    Value: !Ref ProductionAgentAlias
+    Export:
+      Name: !Sub '${AWS::StackName}-ProductionAgentAliasId'
+
+  # ────────────────────────────────────────────────────────────
+  # IAM Resources
+  # ────────────────────────────────────────────────────────────
+
+  LambdaRoleArn:
+    Description: Lambda execution role ARN
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-LambdaRoleArn'
+
+  # ────────────────────────────────────────────────────────────
+  # Lambda Functions
+  # ────────────────────────────────────────────────────────────
+
+  ExtractionAgentArn:
+    Description: Extraction Agent Lambda ARN
+    Value: !GetAtt ExtractionAgentFunction.Arn
+
+  OrchestratorArn:
+    Description: Orchestrator Lambda ARN
+    Value: !GetAtt OrchestratorFunction.Arn
+
+  # ────────────────────────────────────────────────────────────
+  # Deployment Info
+  # ────────────────────────────────────────────────────────────
+
+  Region:
+    Description: Deployment region
+    Value: !Ref AWS::Region
+  
+  StackName:
+    Description: CloudFormation stack name
+    Value: !Ref AWS::StackName
+

@@ -1,0 +1,39 @@
+CLINICAL NOTE - PAIN MANAGEMENT
+Patient: Jennifer Martinez
+DOB: 08/22/1975
+Date of Service: October 22, 2025
+
+CHIEF COMPLAINT:
+Chronic low back pain
+
+HISTORY OF PRESENT ILLNESS:
+50-year-old female with history of chronic low back pain for 5 years.
+Patient has NOT completed conservative treatment. No physical therapy attempted.
+No diagnostic imaging performed to date. Patient requests immediate MRI.
+Pain is described as 5/10, worse with prolonged sitting.
+
+PAST MEDICAL HISTORY:
+- Obesity (BMI 38)
+- Type 2 Diabetes
+- Hypertension
+
+PHYSICAL EXAMINATION:
+- Limited forward flexion
+- Tenderness to palpation L4-L5 region
+- Normal neurological examination
+- No radicular symptoms
+
+ASSESSMENT:
+Chronic mechanical low back pain
+
+PLAN:
+Requesting MRI lumbar spine without physical therapy trial or other conservative measures.
+
+DIAGNOSIS: Low back pain (ICD-10: M54.5)
+PROCEDURE REQUESTED: MRI lumbar spine without contrast (CPT: 72148)
+
+NOTE: Patient has not completed 6 weeks of conservative therapy (physical therapy, medications) as typically required.
+
+Dr. Robert Chen, MD
+Pain Management
+

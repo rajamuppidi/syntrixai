@@ -1,0 +1,48 @@
+# AWS SDK and Core Services
+boto3==1.34.34
+botocore==1.34.34
+awscli==1.32.34
+
+# API Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+flask==3.0.0
+
+# Amazon Bedrock
+anthropic==0.18.0
+
+# ML/AI
+sagemaker==2.214.0
+scikit-learn==1.4.0
+pandas==2.2.0
+numpy==1.26.3
+
+# Data Validation
+pydantic==2.10.4
+pydantic-core==2.27.2
+python-dotenv==1.0.0
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3
+moto==5.0.0
+
+# Frontend (Streamlit option)
+streamlit==1.31.0
+
+# FHIR Support
+fhirclient==4.1.0
+fhir.resources==7.1.0
+
+# Utilities
+python-multipart==0.0.6
+requests==2.31.0
+python-dateutil==2.8.2
+
+# AWS CDK (Infrastructure as Code)
+aws-cdk-lib==2.120.0
+constructs==10.3.0
+
+# Logging and Monitoring
+python-json-logger==2.0.7
+

@@ -1,0 +1,43 @@
+PATIENT: John Smith
+DATE OF SERVICE: October 10, 2024
+CHIEF COMPLAINT: Right knee pain
+
+HISTORY OF PRESENT ILLNESS:
+Mr. Smith is a 52-year-old male presenting with persistent right knee pain for the past 4 months. Pain is worse with weight-bearing activities and stair climbing. Patient reports previous conservative treatment including 6 weeks of physical therapy with minimal improvement. No significant trauma history. Patient denies fever, erythema, or recent injury.
+
+PAST MEDICAL HISTORY:
+- Hypertension (controlled)
+- Type 2 Diabetes (controlled)
+- No previous surgeries
+
+PHYSICAL EXAMINATION:
+- Right knee shows mild effusion
+- Limited range of motion (flexion to 110 degrees, extension -5 degrees)
+- Positive McMurray test
+- Tenderness along medial joint line
+- Stable ligaments
+
+PRIOR TREATMENT:
+- NSAIDs (ibuprofen 800mg TID) - moderate relief
+- Physical therapy - 6 weeks completed, minimal improvement
+- Activity modification attempted
+
+ASSESSMENT:
+Right knee pain, likely meniscal tear vs. degenerative joint disease
+
+PLAN:
+Request prior authorization for MRI of right knee without contrast to evaluate for internal derangement. MRI is medically necessary to guide further treatment planning and determine if arthroscopic intervention is warranted.
+
+DIAGNOSIS CODES:
+- M25.561 - Pain in right knee
+
+PROCEDURE CODES:
+- 73721 - MRI of right knee without contrast
+
+MEDICAL NECESSITY:
+Patient has completed appropriate conservative treatment (6 weeks PT, NSAIDs) without adequate relief. MRI is necessary to evaluate suspected meniscal tear and guide surgical vs. continued conservative management decisions.
+
+Provider: Dr. Jane Anderson, MD
+NPI: 1234567890
+Date: October 10, 2024
+

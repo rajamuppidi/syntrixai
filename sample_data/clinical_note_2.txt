@@ -1,0 +1,44 @@
+PATIENT: Sarah Johnson
+DATE OF SERVICE: October 12, 2024
+CHIEF COMPLAINT: Lower back pain with radiation
+
+HISTORY OF PRESENT ILLNESS:
+Ms. Johnson is a 45-year-old female with complaints of severe lower back pain radiating down left leg for 2 weeks. Patient describes sharp, shooting pain that worsens with sitting and improves slightly with standing. Reports numbness and tingling in left foot. No bowel or bladder dysfunction. No history of trauma.
+
+PAST MEDICAL HISTORY:
+- Previous lumbar strain 2 years ago (resolved)
+- Otherwise healthy
+- No surgeries
+
+PHYSICAL EXAMINATION:
+- Positive straight leg raise test on left at 40 degrees
+- Decreased sensation in L5 distribution
+- 4/5 strength in left dorsiflexion
+- Normal reflexes
+
+PRIOR TREATMENT:
+- Muscle relaxants (cyclobenzaprine)
+- NSAIDs (naproxen 500mg BID)
+- Rest and activity modification
+- No physical therapy yet
+
+ASSESSMENT:
+Lumbar radiculopathy, likely L4-L5 disc herniation
+
+PLAN:
+Request MRI lumbar spine without contrast to evaluate for disc herniation and nerve root compression. Conservative treatment has not provided adequate relief and imaging is necessary to guide further management.
+
+DIAGNOSIS CODES:
+- M54.16 - Radiculopathy, lumbar region
+- M51.26 - Other intervertebral disc displacement, lumbar region
+
+PROCEDURE CODES:
+- 72148 - MRI lumbar spine without contrast
+
+MEDICAL NECESSITY:
+Patient presents with neurological symptoms (radiculopathy) requiring imaging to evaluate for surgical intervention vs. continued conservative management. Imaging necessary to prevent progression of neurological deficit.
+
+Provider: Dr. Michael Chen, MD
+NPI: 0987654321
+Date: October 12, 2024
+

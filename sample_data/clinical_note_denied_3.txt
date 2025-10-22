@@ -1,0 +1,38 @@
+CLINICAL NOTE - SPORTS MEDICINE
+Patient: David Thompson
+DOB: 03/10/1995
+Date of Service: October 22, 2025
+
+CHIEF COMPLAINT:
+Left ankle sprain
+
+HISTORY OF PRESENT ILLNESS:
+30-year-old male athlete with acute left ankle sprain occurred 3 days ago during basketball game.
+Immediate swelling and pain. Currently ambulatory with mild limp.
+X-rays performed showing no fracture.
+
+PHYSICAL EXAMINATION:
+- Mild swelling left lateral malleolus
+- Tenderness over ATFL
+- Negative anterior drawer test
+- Negative talar tilt test
+- Weight bearing with minimal pain
+
+ASSESSMENT:
+Grade 1 ankle sprain, lateral ligaments
+
+PLAN:
+1. RICE protocol (Rest, Ice, Compression, Elevation)
+2. Ankle brace
+3. Request for arthroscopic ankle surgery
+4. Follow-up in 2 weeks
+
+DIAGNOSIS: Sprain of ligaments of ankle (ICD-10: S93.401A)
+PROCEDURE REQUESTED: Arthroscopic ankle surgery (CPT: 29891)
+
+NOTE: Procedure requested (arthroscopic surgery) is NOT appropriate for Grade 1 ankle sprain. 
+Conservative treatment is the standard of care for this condition.
+
+Dr. Amanda Foster, MD
+Sports Medicine
+

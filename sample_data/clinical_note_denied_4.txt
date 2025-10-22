@@ -1,0 +1,37 @@
+CLINICAL NOTE - NEUROLOGY
+Patient: Patricia Williams
+DOB: 11/30/1968
+Date of Service: October 22, 2025
+
+CHIEF COMPLAINT:
+Occasional headaches
+
+HISTORY OF PRESENT ILLNESS:
+57-year-old female with occasional tension headaches, occurring 1-2 times per month.
+Headaches respond well to over-the-counter ibuprofen.
+No visual changes, no neurological deficits, no history of migraine.
+Last headache was 2 weeks ago, resolved completely.
+
+PHYSICAL EXAMINATION:
+- Alert and oriented x3
+- Cranial nerves II-XII intact
+- Normal motor and sensory examination
+- No papilledema on fundoscopic exam
+- Blood pressure 118/76
+
+ASSESSMENT:
+Tension-type headache
+
+PLAN:
+Requesting brain MRI and CT scan for evaluation
+
+DIAGNOSIS: Headache (ICD-10: R51.9)
+PROCEDURE REQUESTED: MRI brain without contrast (CPT: 70551)
+
+NOTE: Clinical presentation does not support need for advanced imaging.
+Patient has benign tension headaches responding to conservative treatment.
+No red flags present (sudden onset, worst headache of life, neurological deficits, fever).
+
+Dr. Michael Kim, MD
+Neurology
+

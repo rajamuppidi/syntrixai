@@ -1,0 +1,16 @@
+{
+  "functions": [
+    {
+      "name": "GetCaseData",
+      "description": "Retrieves complete case data from DynamoDB including patient information, diagnosis, CPT codes, ICD-10 codes, evidence, and current status. Use this when you need to look up details about a specific prior authorization case by its case ID.",
+      "parameters": {
+        "case_id": {
+          "description": "The unique identifier (UUID) for the prior authorization case",
+          "type": "string",
+          "required": true
+        }
+      }
+    }
+  ]
+}
+
